@@ -130,6 +130,8 @@ body {
   background: #eef2f7;
 }
 .innovation-poster { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+.innovation-poster-wrap { cursor: pointer; }
+.innovation-poster-wrap:focus-visible { outline: 3px solid #f59e0b; outline-offset: 3px; }
 .innovation-name { margin: 11px 0 2px; font-size: 19px; font-weight: 700; line-height: 1.35; overflow-wrap: anywhere; }
 .innovation-type { margin: 0; color: #475569; font-size: 14px; line-height: 1.4; overflow-wrap: anywhere; }
 .innovation-open {
@@ -159,6 +161,14 @@ body {
   text-align: center;
 }
 .innovation-error { color: #b91c1c; }
+.innovation-detail-backdrop{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.68)}
+.innovation-detail{position:relative;display:grid;grid-template-columns:minmax(260px,400px) minmax(320px,1fr);gap:34px;width:min(1000px,96vw);max-height:92vh;overflow:auto;padding:26px;border-radius:20px;background:#fff;box-shadow:0 28px 80px rgba(0,0,0,.35)}
+.innovation-detail-close{position:absolute;top:12px;right:12px;z-index:1;width:42px;height:42px;border:3px solid #fff;border-radius:50%;background:#64748b;color:#fff;font-size:28px;line-height:1;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.2)}
+.innovation-detail-image{width:100%;max-height:70vh;object-fit:contain;border-radius:14px;background:#f1f5f9}
+.innovation-detail-info{align-self:center;padding:10px 20px 10px 0;text-align:left}
+.innovation-detail-row{margin:0 0 19px}.innovation-detail-row b{display:block;margin-bottom:3px;font-size:20px}.innovation-detail-row span{display:block;color:#555;font-size:20px;line-height:1.45;overflow-wrap:anywhere}
+.innovation-detail-download{display:inline-flex;align-items:center;justify-content:center;margin-top:8px;padding:12px 24px;border-radius:999px;background:#ff806b;color:#fff;font-size:18px;text-decoration:none;box-shadow:0 6px 16px rgba(255,128,107,.3)}
+body.innovation-modal-open{overflow:hidden}
 
 @media (max-width: 1050px) {
   .innovation-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -172,6 +182,7 @@ body {
   .innovation-card { padding: 10px 10px 13px; border-radius: 16px; }
   .innovation-name { font-size: 16px; }
   .innovation-open { min-width: 105px; min-height: 36px; padding: 8px 15px; font-size: 15px; }
+  .innovation-detail{grid-template-columns:1fr;gap:18px;padding:18px}.innovation-detail-image{max-height:48vh}.innovation-detail-info{padding:0 5px}.innovation-detail-row b,.innovation-detail-row span{font-size:16px}
 }
 @media (max-width: 430px) {
   .innovation-container { width: min(100% - 24px, 360px); }
