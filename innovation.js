@@ -1,117 +1,13 @@
 (() => {
   'use strict';
-
-  const WEB_APP_URL =
-    'https://script.google.com/macros/s/AKfycbxvqWwNRKu5GpoVRyDZGdwXRy6ubEgPAg2-stv-G-arF4HRoqkAfP21oTl124ne6CvZ/exec';
-  const API_URL = WEB_APP_URL + '?mode=innovation';
-  let allItems = [];
-
-  const escapeHtml = value => String(value ?? '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
-
-  const safeUrl = value => {
-    const url = String(value || '').trim();
-    if (!/^https?:\/\//i.test(url)) return '';
-    return url.replace(/^http:\/\//i, 'https://');
-  };
-
-  function renderItems(type) {
-    const grid = document.getElementById('innovationGrid');
-    if (!grid) return;
-
-    const selectedType = String(type || '').trim();
-    const items = selectedType
-      ? allItems.filter(item => item.mediaType === selectedType)
-      : allItems;
-
-    if (!items.length) {
-      grid.innerHTML = '<div class="innovation-empty">ไม่พบรายการในประเภทสื่อที่เลือก</div>';
-      return;
-    }
-
-    grid.innerHTML = items.map((item, index) => {
-      const poster = safeUrl(item.poster);
-      const openUrl = safeUrl(item.openUrl);
-      if (!poster) return '';
-
-      const button = openUrl
-        ? `<a class="innovation-open" href="${escapeHtml(openUrl)}"
-             target="_blank" rel="noopener noreferrer">Open file</a>`
-        : '';
-
-      return `<article class="innovation-card">
-        <div class="innovation-poster-wrap">
-          <img class="innovation-poster" src="${escapeHtml(poster)}"
-               alt="${escapeHtml(item.mediaName || `สื่อรายการที่ ${index + 1}`)}" loading="lazy">
-        </div>
-        <h2 class="innovation-name">${escapeHtml(item.mediaName || 'ไม่ระบุชื่อสื่อ')}</h2>
-        <p class="innovation-type">${escapeHtml(item.mediaType || 'ไม่ระบุประเภท')}</p>
-        ${button}
-      </article>`;
-    }).join('');
-
-    if (!grid.children.length) {
-      grid.innerHTML = '<div class="innovation-empty">ไม่พบรายการที่มีรูป Poster</div>';
-    }
-  }
-
-  function buildFilter(items) {
-    const select = document.getElementById('innovationTypeFilter');
-    if (!select) return;
-
-    const types = [...new Set(
-      items.map(item => item.mediaType).filter(Boolean)
-    )].sort((a, b) => a.localeCompare(b, 'th'));
-
-    select.innerHTML = '<option value="">ทั้งหมด</option>' +
-      types.map(type => `<option value="${escapeHtml(type)}">${escapeHtml(type)}</option>`).join('');
-    select.disabled = false;
-    select.addEventListener('change', () => renderItems(select.value));
-  }
-
-  async function loadInnovations() {
-    const status = document.getElementById('innovationStatus');
-    const grid = document.getElementById('innovationGrid');
-    if (!status || !grid) return;
-
-    try {
-      const response = await fetch(API_URL + '&_t=' + Date.now(), {
-        method: 'GET',
-        cache: 'no-store'
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-      const result = await response.json();
-      if (result.success === false) throw new Error(result.message || 'โหลดข้อมูลไม่สำเร็จ');
-
-      allItems = (Array.isArray(result.items) ? result.items : [])
-        .map(item => ({
-          mediaType: String(item.mediaType || '').trim(),
-          mediaName: String(item.mediaName || '').trim(),
-          poster: String(item.poster || '').trim(),
-          openUrl: String(item.openUrl || '').trim()
-        }))
-        .filter(item => item.mediaType || item.mediaName || item.poster || item.openUrl);
-
-      status.hidden = true;
-      buildFilter(allItems);
-
-      if (!allItems.length) {
-        grid.innerHTML = '<div class="innovation-empty">ยังไม่มีรายการสื่อ/นวัตกรรม</div>';
-        return;
-      }
-
-      renderItems('');
-    } catch (error) {
-      console.error('โหลดสื่อ/นวัตกรรมไม่สำเร็จ:', error);
-      status.hidden = true;
-      grid.innerHTML = `<div class="innovation-error">โหลดรายการไม่สำเร็จ<br>${escapeHtml(error.message)}</div>`;
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', loadInnovations);
+  const API='https://script.google.com/macros/s/AKfycbxvqWwNRKu5GpoVRyDZGdwXRy6ubEgPAg2-stv-G-arF4HRoqkAfP21oTl124ne6CvZ/exec?mode=innovation';
+  let items=[];
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  const safe=v=>{const u=String(v||'').trim();return /^https?:\/\//i.test(u)?u.replace(/^http:\/\//i,'https://'):''};
+  function closeDetail(){document.querySelector('.innovation-detail-backdrop')?.remove();document.body.classList.remove('innovation-modal-open')}
+  function showDetail(x){const poster=safe(x.poster),file=safe(x.openUrl),layer=document.createElement('div');layer.className='innovation-detail-backdrop';layer.innerHTML=`<div class="innovation-detail" role="dialog" aria-modal="true"><button class="innovation-detail-close" type="button" aria-label="ปิด">×</button><img class="innovation-detail-image" src="${esc(poster)}" alt="${esc(x.mediaName)}"><div class="innovation-detail-info"><div class="innovation-detail-row"><b>ชื่อสื่อ</b><span>${esc(x.mediaName||'-')}</span></div><div class="innovation-detail-row"><b>ประเภทสื่อ</b><span>${esc(x.mediaType||'-')}</span></div><div class="innovation-detail-row"><b>ผู้ผลิตสื่อ</b><span>${esc(x.producer||'-')}</span></div><div class="innovation-detail-row"><b>หน่วยงาน</b><span>${esc(x.organization||x.area||'-')}</span></div>${file?`<a class="innovation-detail-download" href="${esc(file)}" target="_blank" rel="noopener noreferrer">ดาวน์โหลดไฟล์</a>`:''}</div></div>`;layer.onclick=e=>{if(e.target===layer)closeDetail()};layer.querySelector('button').onclick=closeDetail;document.body.appendChild(layer);document.body.classList.add('innovation-modal-open')}
+  function render(type=''){const grid=document.getElementById('innovationGrid'),shown=type?items.filter(x=>x.mediaType===type):items;if(!shown.length){grid.innerHTML='<div class="innovation-empty">ไม่พบรายการในประเภทสื่อที่เลือก</div>';return}grid.innerHTML=shown.map((x,i)=>{const poster=safe(x.poster),index=items.indexOf(x);return poster?`<article class="innovation-card"><div class="innovation-poster-wrap" tabindex="0" role="button" data-index="${index}" aria-label="ดูรายละเอียด ${esc(x.mediaName)}"><img class="innovation-poster" src="${esc(poster)}" alt="${esc(x.mediaName||`สื่อรายการที่ ${i+1}`)}" loading="lazy"></div><h2 class="innovation-name">${esc(x.mediaName||'ไม่ระบุชื่อสื่อ')}</h2><p class="innovation-type">${esc(x.mediaType||'ไม่ระบุประเภท')}</p></article>`:''}).join('');grid.querySelectorAll('[data-index]').forEach(el=>{const open=()=>showDetail(items[+el.dataset.index]);el.onclick=open;el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}}});if(!grid.children.length)grid.innerHTML='<div class="innovation-empty">ไม่พบรายการที่มีรูป Poster</div>'}
+  function buildFilter(){const s=document.getElementById('innovationTypeFilter'),current=s.value,types=[...new Set(items.map(x=>x.mediaType).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'th'));s.innerHTML='<option value="">ทั้งหมด</option>'+types.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');s.value=types.includes(current)?current:'';s.disabled=false;if(!s.dataset.bound){s.onchange=()=>render(s.value);s.dataset.bound='1'}}
+  async function load(){const status=document.getElementById('innovationStatus'),grid=document.getElementById('innovationGrid');try{const r=await fetch(API+'&_t='+Date.now(),{cache:'no-store'}),j=await r.json();if(!r.ok||j.success===false)throw new Error(j.message||'โหลดข้อมูลไม่สำเร็จ');items=(Array.isArray(j.items)?j.items:[]).map(x=>({mediaType:String(x.mediaType||'').trim(),mediaName:String(x.mediaName||'').trim(),producer:String(x.producer||'').trim(),organization:String(x.organization||'').trim(),poster:String(x.poster||'').trim(),openUrl:String(x.openUrl||'').trim(),date:String(x.date||'').trim(),area:String(x.area||'').trim()}));status.hidden=true;buildFilter();render(document.getElementById('innovationTypeFilter').value)}catch(e){status.hidden=true;grid.innerHTML=`<div class="innovation-error">โหลดรายการไม่สำเร็จ<br>${esc(e.message)}</div>`}}
+  document.addEventListener('DOMContentLoaded',load);document.addEventListener('innovation-admin-updated',load);document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetail()});
 })();
