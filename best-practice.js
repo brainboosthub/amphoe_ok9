@@ -18,6 +18,13 @@
     return url.replace(/^http:\/\//i, 'https://');
   };
 
+  const dateValue = value => {
+    const text=String(value||'').trim();
+    const match=text.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})$/);
+    if(match){let year=Number(match[3]);if(year<100)year+=2500;if(year>2400)year-=543;return new Date(year,Number(match[2])-1,Number(match[1])).getTime()||0;}
+    return Date.parse(text)||0;
+  };
+
   async function loadBestPractices() {
     const status = document.getElementById('bestPracticeStatus');
     const grid = document.getElementById('bestPracticeGrid');
@@ -33,9 +40,10 @@
       const result = await response.json();
       if (result.success === false) throw new Error(result.message || 'โหลดข้อมูลไม่สำเร็จ');
 
-      const items = Array.isArray(result.items)
+      const items = (Array.isArray(result.items)
         ? result.items
-        : (Array.isArray(result.data) ? result.data : []);
+        : (Array.isArray(result.data) ? result.data : []))
+        .slice().sort((a,b)=>dateValue(b.date)-dateValue(a.date)||(Number(b.order)||0)-(Number(a.order)||0));
 
       status.hidden = true;
 
@@ -70,4 +78,5 @@
   }
 
   document.addEventListener('DOMContentLoaded', loadBestPractices);
+  document.addEventListener('best-practice-admin-updated', loadBestPractices);
 })();
