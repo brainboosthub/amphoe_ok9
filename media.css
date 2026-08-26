@@ -51,7 +51,7 @@ body{
 .media-filters input{padding-right:14px}
 .media-filters input:focus,.media-filters select:focus{outline:3px solid rgba(249,115,22,.16);border-color:var(--media-orange)}
 
-.media-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 28px}
+.media-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 28px}
 
 .media-card{
   display:grid;grid-template-columns:124px minmax(0,1fr);gap:18px;
@@ -64,7 +64,7 @@ body{
 .media-card-image img{width:100%;height:100%;display:block;object-fit:cover}
 .media-no-image{width:100%;height:100%;display:grid;place-items:center;font-size:44px;background:linear-gradient(145deg,#fff7ed,#ffedd5)}
 .media-card-body{min-width:0;display:flex;flex-direction:column;align-items:flex-start}
-.media-card h2{width:100%;margin:1px 0 8px;font-size:21px;line-height:1.28;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.media-card h2{width:100%;margin:1px 0 8px;font-size:18px;line-height:1.28;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .media-card dl{width:100%;margin:0 0 8px;font-size:14px;line-height:1.25}
 .media-card dl div{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px}
 .media-card dt{font-weight:600}
