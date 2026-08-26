@@ -98,4 +98,5 @@
     document.getElementById('courseSearch')?.addEventListener('input', renderTable);
     loadCourses();
   });
+  document.addEventListener('course-admin-updated', loadCourses);
 })();
