@@ -105,6 +105,7 @@
           <div><dt>ผู้ได้รับรางวัล</dt><dd>${escapeHtml(item.recipient || '-')}</dd></div>
           <div><dt>จากหน่วยงาน</dt><dd>${escapeHtml(item.organization || '-')}</dd></div>
           <div><dt>วันที่ได้รับ</dt><dd>${escapeHtml(item.receivedDate || '-')}</dd></div>
+          ${item.date ? `<div><dt>วันที่เพิ่มรายการ</dt><dd>${escapeHtml(item.date)}</dd></div>` : ''}
         </dl>
         <section class="reward-support-section">
           <h3>รูปภาพประกอบ</h3>
@@ -174,6 +175,7 @@
           images: Array.isArray(item.images) ? item.images.map(String) : [],
           receivedDate: String(item.receivedDate || '').trim(),
           detailUrl: String(item.detailUrl || '').trim(),
+          date: String(item.date || '').trim(),
           area: String(item.area || '').trim()
         }))
         .filter(item => item.mainImage || item.award || item.recipient || item.organization);
@@ -195,4 +197,5 @@
     bindEvents();
     loadRewards();
   });
+  document.addEventListener('reward-admin-updated', loadRewards);
 })();
