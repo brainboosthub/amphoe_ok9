@@ -7,7 +7,7 @@
   let student = JSON.parse(localStorage.getItem('LEARN_STUDENT') || 'null');
   let editProfileRemovePhoto = false;
   let activities = [];
-  let currentActivityTarget = 'student';
+  let currentActivityTarget = 'all';
   let hourText = "ชั่วโมง";
   let detailSlideIndex = 0;
   let detailSlideTimer = null;
@@ -47,6 +47,19 @@
     $(id)?.classList.remove('learning-hidden');
     root.querySelectorAll('.learning-tabs button').forEach(b => b.classList.remove('active'));
     btn?.classList.add('active');
+
+    // เมื่อกดแท็บ "กิจกรรมทั้งหมด" ให้ยกเลิกตัวกรองกลุ่มเป้าหมาย
+    // และแสดงกิจกรรมทุกประเภทใน activityGrid ทันที
+    if (id === 'activitiesPage') {
+      currentActivityTarget = 'all';
+      root.querySelectorAll('.shopactivity-target-btn').forEach(button => {
+        const isActive = button.dataset.targetFilter === 'all';
+        button.classList.toggle('target-active', isActive);
+        button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+      renderActivities(activities);
+    }
+
     if (id === 'historyPage') loadHistory();
   }
 
@@ -717,6 +730,8 @@ document.addEventListener('change', event => {
   }
 
   function getFilteredActivitiesByTarget() {
+    if (currentActivityTarget === 'all') return activities;
+
     return activities.filter(a => {
       const type = String(a?.learningType || '').trim();
       if (currentActivityTarget === 'public') return type.includes('ประชาชน');
@@ -725,7 +740,7 @@ document.addEventListener('change', event => {
   }
 
   function filterActivitiesByTarget(target, btn) {
-    currentActivityTarget = target === 'public' ? 'public' : 'student';
+    currentActivityTarget = ['all', 'student', 'public'].includes(target) ? target : 'all';
 
     document.querySelectorAll('.shopactivity-target-btn').forEach(button => {
       const isActive = button.dataset.targetFilter === currentActivityTarget;
