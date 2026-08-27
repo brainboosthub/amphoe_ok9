@@ -7,6 +7,7 @@
   let student = JSON.parse(localStorage.getItem('LEARN_STUDENT') || 'null');
   let editProfileRemovePhoto = false;
   let activities = [];
+  let currentActivityTarget = 'student';
   let hourText = "ชั่วโมง";
   let detailSlideIndex = 0;
   let detailSlideTimer = null;
@@ -396,7 +397,7 @@ if (!fullname || !phone) {
     grid.innerHTML='กำลังโหลด...';
     try {
       activities = await callApi('getActivities', {}, 'GET') || [];
-      renderBaseFilter(activities); renderActivities(activities);
+      renderActivities(getFilteredActivitiesByTarget());
     } catch(err) { grid.innerHTML=`<div class="learning-list-item">โหลดกิจกรรมไม่สำเร็จ: ${escapeHtml(err.message)}</div>`; }
   }
 
@@ -715,11 +716,25 @@ document.addEventListener('change', event => {
     detailSlideTimer=setInterval(()=>{slides[detailSlideIndex].classList.remove('active');dots[detailSlideIndex]?.classList.remove('active');detailSlideIndex=(detailSlideIndex+1)%slides.length;slides[detailSlideIndex].classList.add('active');dots[detailSlideIndex]?.classList.add('active');},2500);
   }
 
-  function renderBaseFilter(list) {
-    const bases=[...new Set(list.map(a=>String(a.baseNo||'').trim()).filter(Boolean))].sort();
-    $('baseFilter').innerHTML='<option value="">ทุกฐานการเรียนรู้</option>'+bases.map(b=>`<option value="${escapeHtml(b)}">${escapeHtml(b)}</option>`).join('');
+  function getFilteredActivitiesByTarget() {
+    return activities.filter(a => {
+      const type = String(a?.learningType || '').trim();
+      if (currentActivityTarget === 'public') return type.includes('ประชาชน');
+      return type.includes('นักศึกษา');
+    });
   }
-  function filterActivities() { const v=$('baseFilter').value; renderActivities(v?activities.filter(a=>String(a.baseNo||'').trim()===v):activities); }
+
+  function filterActivitiesByTarget(target, btn) {
+    currentActivityTarget = target === 'public' ? 'public' : 'student';
+
+    document.querySelectorAll('.shopactivity-target-btn').forEach(button => {
+      const isActive = button.dataset.targetFilter === currentActivityTarget;
+      button.classList.toggle('target-active', isActive);
+      button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+
+    renderActivities(getFilteredActivitiesByTarget());
+  }
   function getActivityHours(a) { return Number(a?.hours||a?.['ชั่วโมง']||a?.hour||0); }
   function formatThaiDate(value) { if(!value)return'-';const d=new Date(value);if(isNaN(d))return escapeHtml(value);return d.toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'}); }
 
@@ -845,7 +860,7 @@ async function loadMyTotalHours() {
   cancelCartItem,
   showRegisterBox,
   openActivityDetail,
-  filterActivities,
+  filterActivitiesByTarget,
   openScoreModal,
   closeStudentModal,
   clearStudentPhoto,
