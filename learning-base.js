@@ -620,6 +620,11 @@ $('detailContent').innerHTML = `
     </div>
 
     <div class="line">
+      <b>รายละเอียดกิจกรรม :</b>
+      ${escapeHtml(a.detail || '-')}
+    </div>
+
+    <div class="line">
       <b>คุณสมบัติ :</b>
       ${escapeHtml(a.qualification || '-')}
     </div>
