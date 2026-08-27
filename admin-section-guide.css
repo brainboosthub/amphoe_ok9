@@ -1,0 +1,85 @@
+.admin-section-spacer,
+.admin-section-marker { display: none; }
+
+body.admin-edit-mode .admin-section-spacer {
+  display: block;
+  width: 100%;
+  height: var(--admin-section-gap, 0px);
+  min-height: 0;
+  background: transparent;
+  transition: height .18s ease;
+}
+
+body.admin-edit-mode section[data-admin-section] {
+  position: relative;
+  border-top: 6px solid #ff001f !important;
+  box-sizing: border-box;
+}
+
+body.admin-edit-mode section[data-admin-section] > .admin-section-marker {
+  position: absolute;
+  z-index: 9000;
+  top: -6px;
+  left: 80%;
+  display: grid;
+  grid-template-columns: 28px minmax(76px, auto) 28px;
+  grid-template-areas:
+    "minus title plus"
+    "minus number plus";
+  align-items: center;
+  min-width: 154px;
+  min-height: 82px;
+  padding: 8px 8px 9px;
+  border-radius: 0 0 10px 10px;
+  background: #ff001f;
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(255, 0, 31, .24);
+  font-family: "Kanit", sans-serif;
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.admin-section-marker-title {
+  grid-area: title;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.admin-section-marker-number {
+  grid-area: number;
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.admin-section-gap-button {
+  width: 25px;
+  height: 25px;
+  padding: 0;
+  border: 1px solid rgba(255,255,255,.75);
+  border-radius: 50%;
+  background: rgba(255,255,255,.17);
+  color: #fff;
+  font: 700 18px/1 "Kanit", sans-serif;
+  cursor: pointer;
+}
+
+.admin-section-gap-button:hover { background: #fff; color: #dc001b; }
+.admin-section-gap-minus { grid-area: minus; }
+.admin-section-gap-plus { grid-area: plus; }
+
+@media (max-width: 760px) {
+  body.admin-edit-mode section[data-admin-section] { border-top-width: 4px !important; }
+  body.admin-edit-mode section[data-admin-section] > .admin-section-marker {
+    top: -4px;
+    left: 72%;
+    grid-template-columns: 24px minmax(60px, auto) 24px;
+    min-width: 126px;
+    min-height: 68px;
+    padding: 6px;
+  }
+  .admin-section-marker-title { font-size: 11px; }
+  .admin-section-marker-number { font-size: 30px; }
+  .admin-section-gap-button { width: 22px; height: 22px; font-size: 15px; }
+}
