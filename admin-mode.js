@@ -1,8 +1,8 @@
 (() => {
   'use strict';
   const API_URL='https://script.google.com/macros/s/AKfycbxvqWwNRKu5GpoVRyDZGdwXRy6ubEgPAg2-stv-G-arF4HRoqkAfP21oTl124ne6CvZ/exec';
-  const CSS_FILES=['edit-website.css?v=20260826-1','news-manager.css?v=20260826-1','newsletter-manager.css?v=20260826-1','newsletter-overlay.css?v=20260826-3','facebook-manager.css?v=20260826-1'];
-  const JS_FILES=['edit-website.js?v=20260826-1','news-manager.js?v=20260826-1','newsletter-manager.js?v=20260826-4','facebook-manager.js?v=20260826-2'];
+  const CSS_FILES=['edit-website.css?v=20260827-2','news-manager.css?v=20260826-1','newsletter-manager.css?v=20260826-1','newsletter-overlay.css?v=20260826-3','facebook-manager.css?v=20260826-1'];
+  const JS_FILES=['edit-website.js?v=20260827-2','news-manager.js?v=20260826-1','newsletter-manager.js?v=20260826-4','facebook-manager.js?v=20260826-2'];
   let toolsPromise=null;
   const $=id=>document.getElementById(id);
   async function api(payload){const response=await fetch(API_URL,{method:'POST',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});if(!response.ok)throw new Error(`HTTP ${response.status}`);const result=await response.json();if(!result.success)throw new Error(result.message||'ดำเนินการไม่สำเร็จ');return result}
