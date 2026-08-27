@@ -93,6 +93,48 @@
         border-radius:14px;
       }
     }
+
+    body.shopactivity-page .shopactivity-target-filters{
+      margin-left:auto;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    body.shopactivity-page #learningBaseModule .shopactivity-target-btn{
+      min-width:150px;
+      background:#e5e7eb;
+      color:#111827;
+      border:0;
+      border-radius:12px;
+      padding:11px 16px;
+      font-family:inherit;
+      font-weight:600;
+      cursor:pointer;
+      transition:background .18s ease,color .18s ease,transform .18s ease;
+    }
+
+    body.shopactivity-page #learningBaseModule .shopactivity-target-btn:hover{
+      transform:translateY(-1px);
+    }
+
+    body.shopactivity-page #learningBaseModule .shopactivity-target-btn.target-active{
+      background:#2563eb;
+      color:#fff;
+    }
+
+    @media (max-width:650px){
+      body.shopactivity-page .shopactivity-target-filters{
+        width:100%;
+        margin-left:0;
+        display:grid;
+        grid-template-columns:1fr 1fr;
+      }
+      body.shopactivity-page #learningBaseModule .shopactivity-target-btn{
+        min-width:0;
+        width:100%;
+      }
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link
@@ -352,14 +394,26 @@
     </button>
   </div>
 
-  <div style="margin-left:auto">
-    <select
-      id="baseFilter"
-      onchange="LearningBase.filterActivities()"
-      style="width:260px"
+  <div class="shopactivity-target-filters" role="group" aria-label="กรองประเภทกิจกรรม">
+    <button
+      type="button"
+      class="shopactivity-target-btn target-active"
+      data-target-filter="student"
+      aria-pressed="true"
+      onclick="LearningBase.filterActivitiesByTarget('student', this)"
     >
-      <option value="">ทุกฐานการเรียนรู้</option>
-    </select>
+      กิจกรรมนักศึกษา
+    </button>
+
+    <button
+      type="button"
+      class="shopactivity-target-btn"
+      data-target-filter="public"
+      aria-pressed="false"
+      onclick="LearningBase.filterActivitiesByTarget('public', this)"
+    >
+      กิจกรรมประชาชน
+    </button>
   </div>
 
 </div>
@@ -672,7 +726,7 @@
 <!-- Popup รายละเอียดหนังสือ -->
 </div>
 
-  <script src="learning-base.js?v=20260828-1"></script>
+  <script src="learning-base.js?v=20260828-2"></script>
   <script src="profile-box.js?v=20260731-1"></script>
 
   
