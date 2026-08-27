@@ -409,35 +409,39 @@ function renderActivities(list) {
   }
 
   grid.innerHTML = list.map(a => `
-    <article class="learning-card">
+    <article class="learning-card shopactivity-card">
 
-      <img
-        src="${escapeHtml(a.image1)}"
-        alt="${escapeHtml(a.title)}"
-        class="learning-card-image"
-        role="button"
-        tabindex="0"
-        title="คลิกเพื่อดูรายละเอียด"
-        onclick="LearningBase.openActivityDetail('${escapeHtml(a.activityId)}')"
-        onkeydown="if(event.key==='Enter'){LearningBase.openActivityDetail('${escapeHtml(a.activityId)}')}"
-      >
+      <div class="learning-card-image-wrap">
+        <img
+          src="${escapeHtml(a.image1 || 'https://placehold.co/600x400?text=Activity')}"
+          alt="${escapeHtml(a.title || 'กิจกรรม')}"
+          class="learning-card-image"
+          role="button"
+          tabindex="0"
+          title="คลิกเพื่อดูรายละเอียด"
+          onclick="LearningBase.openActivityDetail('${escapeHtml(a.activityId)}')"
+          onkeydown="if(event.key==='Enter'){LearningBase.openActivityDetail('${escapeHtml(a.activityId)}')}"
+          onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=Activity';"
+        >
+        <div class="learning-point-badge">${escapeHtml(a.hours || '0')} Point</div>
+      </div>
 
       <div class="learning-card-body">
 
         <h3 class="learning-card-title">
-          ${escapeHtml(a.title)}
+          ${escapeHtml(a.title || '-')}
         </h3>
 
-        <div class="learning-point">
-          Point: ${escapeHtml(a.hours || '0')} Point
+        <div class="learning-card-meta-line">
+          สำหรับ - ${escapeHtml(a.learningType || '-')}
         </div>
 
-        <div class="learning-meta">
-          รูปแบบ: ${escapeHtml(a.learningType || '-')}
+        <div class="learning-card-meta-line">
+          วันที่จัดกิจกรรม : ${formatThaiDate(a.activityDate)}
         </div>
 
-        <div class="learning-meta">
-          วันที่: ${escapeHtml(a.activityDate || '-')}
+        <div class="learning-card-meta-line">
+          สถานที่ : ${escapeHtml(a.location || '-')}
         </div>
 
       </div>
@@ -603,31 +607,26 @@ $('detailContent').innerHTML = `
 
   <div class="detail-info">
 
- <h2>${escapeHtml(a.title || '-')}</h2>
-
-<div class="line">
-  <b>Point:</b>
-  ${escapeHtml(a.hours || '0')}
-</div>
+    <h2>${escapeHtml(a.title || '-')}</h2>
 
     <div class="line">
-      <b>รูปแบบการเรียนรู้:</b>
+      <b>Point :</b>
+      ${escapeHtml(a.hours || '0')}
+    </div>
+
+    <div class="line">
+      <b>กิจกรรมสำหรับ :</b>
       ${escapeHtml(a.learningType || '-')}
     </div>
 
     <div class="line">
-      <b>รายละเอียด:</b><br>
-      ${escapeHtml(a.detail || '-')}
+      <b>คุณสมบัติ :</b>
+      ${escapeHtml(a.qualification || '-')}
     </div>
 
     <div class="line">
-      <b>วันที่จัดกิจกรรม:</b>
+      <b>วันที่จัดกิจกรรม :</b>
       ${formatThaiDate(a.activityDate)}
-    </div>
-
-    <div class="line">
-      <b>ครูฐาน:</b>
-      ${escapeHtml(a.teacher || a.baseTeacher || '-')}
     </div>
 
   </div>
