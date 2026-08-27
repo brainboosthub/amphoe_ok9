@@ -398,8 +398,18 @@
     <button
       type="button"
       class="shopactivity-target-btn target-active"
-      data-target-filter="student"
+      data-target-filter="all"
       aria-pressed="true"
+      onclick="LearningBase.filterActivitiesByTarget('all', this)"
+    >
+      กิจกรรมทั้งหมด
+    </button>
+
+    <button
+      type="button"
+      class="shopactivity-target-btn"
+      data-target-filter="student"
+      aria-pressed="false"
       onclick="LearningBase.filterActivitiesByTarget('student', this)"
     >
       กิจกรรมนักศึกษา
