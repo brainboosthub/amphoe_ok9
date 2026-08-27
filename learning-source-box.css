@@ -487,3 +487,59 @@
   }
 
 }
+
+/* shopactivity.html activity cards - 2026-08-28 */
+body.shopactivity-page #activityGrid .learning-card-image-wrap{
+  position:relative;
+  width:100%;
+  overflow:hidden;
+  background:#e5e7eb;
+}
+
+body.shopactivity-page #activityGrid .learning-card-image{
+  height:250px;
+}
+
+body.shopactivity-page #activityGrid .learning-point-badge{
+  position:absolute;
+  top:14px;
+  right:14px;
+  z-index:2;
+  padding:6px 10px;
+  border-radius:4px;
+  background:rgba(255,255,255,.96);
+  color:#111827;
+  box-shadow:0 2px 8px rgba(15,23,42,.16);
+  font-size:17px;
+  font-weight:700;
+  line-height:1.2;
+}
+
+body.shopactivity-page #activityGrid .learning-card-body{
+  padding:24px 18px 22px;
+}
+
+body.shopactivity-page #activityGrid .learning-card-title{
+  margin:0 0 16px;
+  font-size:20px;
+  line-height:1.45;
+}
+
+body.shopactivity-page #activityGrid .learning-card-meta-line{
+  margin-top:9px;
+  color:#4b5563;
+  font-size:16px;
+  line-height:1.55;
+}
+
+@media (max-width:768px){
+  body.shopactivity-page #activityGrid .learning-card-image{
+    height:220px;
+  }
+  body.shopactivity-page #activityGrid .learning-point-badge{
+    top:12px;
+    right:12px;
+    font-size:15px;
+  }
+}
+
