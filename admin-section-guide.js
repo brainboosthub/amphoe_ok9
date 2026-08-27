@@ -1,85 +1,13 @@
-(() => {
-  'use strict';
-
-  const sections = [
-    ['studentServicesBox', 1],
-    ['userBox', 2],
-    ['learningSourceBox', 3],
-    ['activityBox', 4],
-    ['FBpostBox', 5],
-    ['cliproomBox', 6],
-    ['learningBaseModule', 7]
-  ];
-  const storageKey = 'adminSectionSpacingV1';
-  const step = 4;
-  const maxGap = 40;
-
-  function readSpacing() {
-    try {
-      const value = JSON.parse(localStorage.getItem(storageKey) || '{}');
-      return value && typeof value === 'object' ? value : {};
-    } catch (_) {
-      return {};
-    }
-  }
-
-  function saveSpacing(value) {
-    try { localStorage.setItem(storageKey, JSON.stringify(value)); } catch (_) {}
-  }
-
-  function initialize() {
-    const spacing = readSpacing();
-
-    sections.forEach(([id, number]) => {
-      const section = document.getElementById(id);
-      if (!section || section.dataset.adminSectionReady === '1') return;
-
-      section.dataset.adminSection = String(number);
-      section.dataset.adminSectionReady = '1';
-
-      const spacer = document.createElement('div');
-      spacer.className = 'admin-section-spacer';
-      spacer.dataset.adminSectionSpacer = String(number);
-      spacer.setAttribute('aria-hidden', 'true');
-      section.before(spacer);
-
-      const marker = document.createElement('div');
-      marker.className = 'admin-section-marker';
-      marker.setAttribute('aria-label', `SECTION ${number} ปรับช่องว่าง`);
-      marker.innerHTML = `
-        <button class="admin-section-gap-button admin-section-gap-minus" type="button" aria-label="ลดช่องว่าง SECTION ${number}">−</button>
-        <span class="admin-section-marker-title">SECTION</span>
-        <strong class="admin-section-marker-number">${number}</strong>
-        <button class="admin-section-gap-button admin-section-gap-plus" type="button" aria-label="เพิ่มช่องว่าง SECTION ${number}">+</button>`;
-      section.prepend(marker);
-
-      let gap = Math.max(0, Math.min(maxGap, Number(spacing[number]) || 0));
-      const applyGap = () => spacer.style.setProperty('--admin-section-gap', `${gap}px`);
-      applyGap();
-
-      marker.querySelector('.admin-section-gap-minus').addEventListener('click', event => {
-        event.preventDefault();
-        event.stopPropagation();
-        gap = Math.max(0, gap - step);
-        spacing[number] = gap;
-        applyGap();
-        saveSpacing(spacing);
-      });
-
-      marker.querySelector('.admin-section-gap-plus').addEventListener('click', event => {
-        event.preventDefault();
-        event.stopPropagation();
-        gap = Math.min(maxGap, gap + step);
-        spacing[number] = gap;
-        applyGap();
-        saveSpacing(spacing);
-      });
-    });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initialize, { once: true });
-  } else {
-    initialize();
-  }
+(()=>{'use strict';
+const API='https://script.google.com/macros/s/AKfycbxvqWwNRKu5GpoVRyDZGdwXRy6ubEgPAg2-stv-G-arF4HRoqkAfP21oTl124ne6CvZ/exec';
+const defaults=['studentServicesBox','userBox','learningSourceBox','activityBox','FBpostBox','cliproomBox','learningBaseModule'];let layout=defaults.map(id=>({id,visible:true})),saving=false,pendingSave=false;
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+function normalize(items){const map=new Map((Array.isArray(items)?items:[]).map(x=>[String(x.id||''),x.visible!==false])),seen=new Set(),out=[];(Array.isArray(items)?items:[]).forEach(x=>{const id=String(x.id||'');if(defaults.includes(id)&&!seen.has(id)){seen.add(id);out.push({id,visible:x.visible!==false})}});defaults.forEach(id=>{if(!seen.has(id))out.push({id,visible:map.has(id)?map.get(id):true})});return out}
+async function getLayout(){const r=await fetch(API+'?mode=sectionlayout&_t='+Date.now(),{cache:'no-store'}),j=await r.json();if(!r.ok||j.success===false)throw new Error(j.message||'โหลดการจัดเรียง Section ไม่สำเร็จ');return normalize(j.items)}
+async function saveLayout(){if(saving){pendingSave=true;return}saving=true;const snapshot=layout.map(x=>({...x}));status('กำลังบันทึก...');try{const token=sessionStorage.getItem('mysiteAdminToken')||'',r=await fetch(API,{method:'POST',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({mode:'sectionlayoutadmin',action:'save',token,data:{items:snapshot}})}),j=await r.json();if(!r.ok||!j.success)throw new Error(j.message||'บันทึกไม่สำเร็จ');if(!pendingSave){layout=normalize(j.data?.items);apply();status('บันทึกแล้ว',900)}}catch(e){status('บันทึกไม่สำเร็จ: '+e.message,2600)}finally{saving=false;if(pendingSave){pendingSave=false;saveLayout()}}}
+function status(text,delay=0){let el=document.querySelector('.admin-section-save-status');if(!el){el=document.createElement('div');el.className='admin-section-save-status';document.body.appendChild(el)}el.textContent=text;el.hidden=false;clearTimeout(el._timer);if(delay)el._timer=setTimeout(()=>el.hidden=true,delay)}
+function marker(item,index){const section=document.getElementById(item.id);if(!section)return;let box=section.querySelector(':scope > .admin-section-marker');if(!box){box=document.createElement('div');box.className='admin-section-marker';section.prepend(box)}box.innerHTML=`<button class="admin-section-control admin-section-eye" type="button" title="${item.visible?'ปิดการมองเห็น':'เปิดการมองเห็น'}" aria-label="${item.visible?'ปิด':'เปิด'}การมองเห็น SECTION ${index+1}"><i class="fa-solid ${item.visible?'fa-eye':'fa-eye-slash'}"></i></button><span class="admin-section-marker-title">SECTION</span><strong class="admin-section-marker-number">${index+1}</strong><button class="admin-section-control admin-section-up" type="button" aria-label="เลื่อน SECTION ${index+1} ขึ้น" ${index===0?'disabled':''}><i class="fa-solid fa-arrow-up"></i></button><button class="admin-section-control admin-section-down" type="button" aria-label="เลื่อน SECTION ${index+1} ลง" ${index===layout.length-1?'disabled':''}><i class="fa-solid fa-arrow-down"></i></button>`;box.querySelector('.admin-section-eye').onclick=e=>{e.stopPropagation();layout[index].visible=!layout[index].visible;apply();saveLayout()};box.querySelector('.admin-section-up').onclick=e=>{e.stopPropagation();if(index<1)return;[layout[index-1],layout[index]]=[layout[index],layout[index-1]];apply();saveLayout()};box.querySelector('.admin-section-down').onclick=e=>{e.stopPropagation();if(index>=layout.length-1)return;[layout[index],layout[index+1]]=[layout[index+1],layout[index]];apply();saveLayout()};let msg=section.querySelector(':scope > .admin-section-hidden-message');if(!msg){msg=document.createElement('div');msg.className='admin-section-hidden-message';msg.textContent='section นี้ถูกปิดการมองเห็น';section.appendChild(msg)}}
+function apply(){const parent=document.getElementById(layout[0]?.id)?.parentElement;if(!parent)return;layout.forEach((item,index)=>{const section=document.getElementById(item.id);if(!section)return;parent.appendChild(section);section.dataset.adminSection=String(index+1);section.dataset.sectionVisible=String(item.visible);marker(item,index)})}
+async function init(){try{layout=await getLayout()}catch(e){console.warn(e);layout=normalize([])}apply()}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
