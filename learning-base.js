@@ -784,6 +784,28 @@ async function loadMyTotalHours() {
     try{Swal.showLoading();const res=await callApi('getMyScoreDetail',{studentId:student.studentId},'GET');Swal.close();const list=res.list||[],total=res.total||0;if(!list.length)return Swal.fire(`${hourText}สะสม`,`ยังไม่มีรายการ${hourText}ที่ได้รับ`,'info');const html=`<div style="text-align:left"><h3>รวมทั้งหมด ${total} ${escapeHtml(hourText)}</h3><table style="width:100%;border-collapse:collapse"><tbody>${list.map(x=>`<tr><td style="padding:8px;border:1px solid #ddd">${escapeHtml(x.title)}</td><td style="padding:8px;border:1px solid #ddd">${escapeHtml(x.baseNo)}</td><td style="padding:8px;border:1px solid #ddd">${escapeHtml(x.actualHours)}</td></tr>`).join('')}</tbody></table></div>`;Swal.fire({title:`รายการ${hourText}ที่ได้รับ`,html,width:800,confirmButtonText:'ปิด'});}catch(err){Swal.close();Swal.fire('ผิดพลาด',err.message,'error');}
   }
 
+  function logoutFromEditProfile() {
+    Swal.fire({
+      title:'ออกจากระบบ?',
+      text:'คุณต้องการออกจากระบบใช่หรือไม่',
+      icon:'warning',
+      showCancelButton:true,
+      confirmButtonText:'ออกจากระบบ',
+      cancelButtonText:'ยกเลิก',
+      confirmButtonColor:'#ef4444',
+      reverseButtons:true
+    }).then(r=>{
+      if(!r.isConfirmed)return;
+      student=null;
+      localStorage.removeItem('LEARN_STUDENT');
+      closeEditProfile();
+      closeModal('studentModal');
+      updateTop();
+      const root=$('learningBaseModule');
+      if(root)showPage('activitiesPage',root.querySelector('.learning-tabs button'));
+    });
+  }
+
   function closeStudentModal() {
     Swal.fire({title:'ออกจากระบบ?',icon:'warning',showCancelButton:true,confirmButtonText:'ออกจากระบบ',cancelButtonText:'ยกเลิก'}).then(r=>{if(!r.isConfirmed)return;student=null;localStorage.removeItem('LEARN_STUDENT');closeModal('studentModal');updateTop();showPage('activitiesPage',$('learningBaseModule').querySelector('.learning-tabs button'));});
   }
@@ -885,7 +907,8 @@ async function loadMyTotalHours() {
   openEditProfile,
   closeEditProfile,
   removeEditProfilePhoto,
-  saveEditProfile
+  saveEditProfile,
+  logoutFromEditProfile
 };
 document.addEventListener('DOMContentLoaded', async () => {
   const teacherLink = $('teacherPageLink');
