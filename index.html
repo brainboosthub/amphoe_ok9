@@ -43,7 +43,7 @@
     #learningBaseModule .shopactivity-dot.active{width:27px;background:#2563eb}
     @media(max-width:620px){#learningBaseModule.shopactivity-preview{padding:38px 0}#learningBaseModule .shopactivity-arrow{top:auto;bottom:0;width:36px;height:36px;padding:0}}
   </style>
-  <link rel="stylesheet" href="profile-box.css?v=20260731-1" />
+  <link rel="stylesheet" href="profile-box.css?v=20260828-2" />
 <link rel="stylesheet" href="student-box.css?v=20260817-1" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link
@@ -771,6 +771,25 @@
       </button>
 
     </div>
+
+    <div
+      id="editPhotoPreviewWrap"
+      class="edit-profile-preview-wrap"
+      hidden>
+
+      <img
+        id="editPhotoPreview"
+        class="edit-profile-preview"
+        alt="ตัวอย่างรูปโปรไฟล์">
+
+      <button
+        class="btn-red edit-profile-remove-photo"
+        type="button"
+        onclick="LearningBase.removeEditProfilePhoto()">
+        ลบรูป
+      </button>
+    </div>
+
     <div class="edit-profile-form">
 
       <label for="editFullname">ชื่อ-นามสกุล</label>
@@ -819,24 +838,15 @@
       </div>
 
     </div>
-    <div
-      id="editPhotoPreviewWrap"
-      class="edit-profile-preview-wrap"
-      hidden>
 
-      <img
-        id="editPhotoPreview"
-        class="edit-profile-preview"
-        alt="ตัวอย่างรูปโปรไฟล์">
-
+    <div class="edit-profile-footer">
       <button
-        class="btn-red edit-profile-remove-photo"
+        class="profile-logout-btn edit-profile-logout-btn"
         type="button"
-        onclick="LearningBase.removeEditProfilePhoto()">
-        ลบรูป
+        onclick="LearningBase.logoutFromEditProfile()">
+        ออกจากระบบ
       </button>
     </div>
-
 
   </div>
 </div>
@@ -881,7 +891,7 @@
 <!-- Popup รายละเอียดหนังสือ -->
 </div>
 
-  <script src="learning-base.js?v=20260720-3"></script>
+  <script src="learning-base.js?v=20260828-2"></script>
   <script src="profile-box.js?v=20260731-1"></script>
 
   
