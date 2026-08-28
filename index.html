@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="style.css?v=20260823-1" />
   <link rel="stylesheet" href="announcement.css?v=20260824-1" />
   <link rel="stylesheet" href="site-content.css?v=20260824-1" />
-  <link rel="stylesheet" href="admin-mode.css?v=20260828-2" />
+  <link rel="stylesheet" href="admin-mode.css?v=20260828-3" />
   <link rel="stylesheet" href="admin-section-guide.css?v=20260827-1" />
   <link rel="stylesheet" href="learning-source-box.css?v=20260819-2" />
   <link rel="stylesheet" href="activity-box.css?v=20260826-6" />
@@ -83,6 +83,16 @@
         <span data-website-brand-name>.</span>
       </a>
       <p id="announcementText" hidden></p>
+      <div class="announcement-admin-actions" aria-label="การเข้าสู่ระบบผู้ดูแล">
+        <button id="adminLoginButton" class="admin-access-button" type="button">
+          <i class="fa-solid fa-user-shield" aria-hidden="true"></i>
+          <span>ผู้ดูแลระบบ</span>
+        </button>
+        <button id="adminLogoutButton" class="admin-access-button admin-logout-button" type="button" hidden>
+          <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+          <span>ออกจากโหมดแก้ไข</span>
+        </button>
+      </div>
       <div id="announcementSocials" class="announcement-socials" hidden aria-label="ช่องทางสื่อสังคมออนไลน์">
         <a id="announcementLine" class="announcement-social announcement-line" target="_blank" rel="noopener noreferrer" aria-label="Line" hidden>
           <i class="fa-brands fa-line" aria-hidden="true"></i>
@@ -567,16 +577,6 @@
         <a class="brand brand-light" href="#home"><span class="brand-icon" data-website-brand-icon>B</span><span data-website-brand-name>.</span></a>
         <p id="footerOrganization" class="footer-organization" hidden></p>
         <p id="footerDescription" hidden></p>
-        <div class="footer-admin-actions" aria-label="การเข้าสู่ระบบผู้ดูแล">
-          <button id="adminLoginButton" class="admin-access-button" type="button">
-            <i class="fa-solid fa-user-shield" aria-hidden="true"></i>
-            <span>ผู้ดูแลระบบ</span>
-          </button>
-          <button id="adminLogoutButton" class="admin-access-button admin-logout-button" type="button" hidden>
-            <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
-            <span>ออกจากโหมดแก้ไข</span>
-          </button>
-        </div>
       </div>
       <div>
         <h4>ติดต่อเรา</h4>
