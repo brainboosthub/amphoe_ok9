@@ -343,6 +343,24 @@ if (!fullname || !phone) {
     }
   }
 }
+  function triggerMobileProfilePhotoEffect() {
+    const photo = $('mobileProfilePhoto');
+    if (!photo) return;
+
+    // ลบคลาสก่อนเพื่อให้เรียก effect ซ้ำได้ทุกครั้ง
+    photo.classList.remove('profile-login-success-effect');
+    void photo.offsetWidth;
+    photo.classList.add('profile-login-success-effect');
+
+    const cleanup = () => {
+      photo.classList.remove('profile-login-success-effect');
+      photo.removeEventListener('animationend', cleanup);
+    };
+
+    photo.addEventListener('animationend', cleanup);
+    setTimeout(cleanup, 1800);
+  }
+
   async function registerStudent() {
     const photoInput = $('stuPhoto');
     const photoFile = photoInput?.files?.[0] || null;
@@ -380,14 +398,42 @@ if (!fullname || !phone) {
       });
       const res = await callApi('registerStudent', data);
       Swal.close();
-      await Swal.fire(res.ok ? 'สำเร็จ':'แจ้งเตือน',res.message,res.ok?'success':'warning');
-      if (res.ok && res.student) {
-        student = res.student;
-        localStorage.setItem('LEARN_STUDENT', JSON.stringify(student));
-        closeModal('studentModal');
-        clearStudentPhoto();
-        updateTop();
+
+      if (!res.ok || !res.student) {
+        return Swal.fire('แจ้งเตือน', res.message || 'ลงทะเบียนไม่สำเร็จ', 'warning');
       }
+
+      // แจ้งลงทะเบียนสำเร็จ 2 วินาที และปิดอัตโนมัติ ไม่ต้องกด OK
+      await Swal.fire({
+        icon: 'success',
+        title: 'สำเร็จ',
+        text: res.message || 'ลงทะเบียนสำเร็จ',
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false
+      });
+
+      // ถือว่าลงทะเบียนสำเร็จ = เข้าสู่ระบบทันที
+      student = res.student;
+      localStorage.setItem('LEARN_STUDENT', JSON.stringify(student));
+      closeModal('studentModal');
+      clearStudentPhoto();
+      updateTop();
+
+      // แจ้งสถานะเข้าสู่ระบบ 1 วินาที แล้วปิดอัตโนมัติ
+      await Swal.fire({
+        icon: 'success',
+        title: 'เข้าสู่ระบบแล้ว',
+        timer: 1000,
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false
+      });
+
+      // เน้นรูปโปรไฟล์หลัง Popup ปิด เพื่อให้ผู้ใช้เห็นตำแหน่งบัญชีของตนชัดเจน
+      triggerMobileProfilePhotoEffect();
     } catch(err) { Swal.close(); Swal.fire('ผิดพลาด',err.message,'error'); }
   }
 
